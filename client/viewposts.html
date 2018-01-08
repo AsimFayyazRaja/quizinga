@@ -1,0 +1,317 @@
+<html ng-app="myApp">
+        <!-- Latest compiled and minified CSS -->
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+         <!-- jQuery library -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+         <!-- Latest compiled JavaScript -->
+         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+         <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+    <script src="http://code.angularjs.org/1.2.13/angular-animate.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-materialize/0.2.2/angular-materialize.min.js"></script>
+    
+    
+    <style>
+
+.topicname{
+    width: 80px;
+    height: 100px;
+    background: lightblue;
+    position :relative;
+    -webkit-animation: mymove 5s infinite; /* Safari 4.0 - 8.0 */
+    animation: mymove 10s infinite;
+    transition-property: width;
+}
+
+
+/* Standard syntax */
+@keyframes mymove {
+    0%   {left: 550px;}
+    25%  {left: 800px;}
+    75%  {left: 700px;}
+    100% {left: 550px;}
+}
+
+        .home{
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 150px;
+    min-height: 200px;
+}
+
+       .ques{
+         margin-left: 200px;
+     margin-right: 200px;
+     margin-top: 200px;
+     min-height: 2000px;
+       }
+       body {
+     background-color:whitesmoke;
+    }
+    
+    
+    </style>
+    
+    <script>
+    var app=angular.module('myApp', ['ngCookies','ngFileUpload', 'ngRoute'])
+    .config(['$locationProvider', function($locationProvider) {
+     $locationProvider.html5Mode(false);
+     $locationProvider.hashPrefix('');
+    }]);
+    
+    app.controller('topiccontroller',function($scope,$location,$http,$cookies,$window,$route){
+    $scope.message="Posts";
+
+    $scope.postupload=function(){
+        if($scope.post){
+        var img=$scope.topicImage;
+        var post=$scope.post;
+        console.log(img);
+        var formdata = new FormData();
+        formdata.append('img',img);
+        formdata.append('post',post);
+        //console.log(formdata);
+        $http.post('/posts/addpost',formdata,{
+            transformRequest:angular.identity,
+            headers:{'Content-Type': undefined}
+        }).then(function(res){
+            if(res.data=="added"){
+                $http.get('/posts/getallposts').then(function(res){
+                $scope.posts=res.data;
+                console.log($scope.posts);
+                $scope.post="";
+                Materialize.toast('Posted!', 2000);
+            });
+            }else{
+                alert("some error occured, post not added");
+            }
+        });
+    }
+    }
+
+    $scope.likecomment=function(postid,cmntid){
+        console.log(cmntid);
+        $http.post('/posts/likecomment',{postid:postid,commentid:cmntid})
+        .then(function(res){
+            $http.get('/posts/getallposts').then(function(res){
+            $scope.posts=res.data;
+            console.log($scope.posts);
+            });
+        })
+    }
+
+    $scope.commentpost=function(postid,cmnt){
+        console.log(postid);
+        console.log(cmnt);
+        $http.post('/posts/commentpost',{postid:postid,comment:cmnt}).then(function(resp){
+            $http.get('/posts/getallposts').then(function(res){
+            $scope.posts=res.data;
+            console.log($scope.posts);
+            });
+        });
+    }
+
+    $scope.likepost=function(postid){
+        console.log(postid);
+        $http.post('/posts/likepost',{postid:postid}).then(function(resp){
+            $http.get('/posts/getallposts').then(function(res){
+            $scope.posts=res.data;
+            console.log($scope.posts);
+            });
+        });
+    }
+
+    $http.get('/posts/topicname').then(function(res){
+        $scope.topic=res.data;
+        console.log($scope.topic);
+    });
+
+    $http.get('/posts/getallposts').then(function(res){
+        $scope.posts=res.data;
+        console.log($scope.posts);
+    });
+});
+    
+    
+    </script>
+    
+    <title>
+       Posts
+     </title>
+    
+     <head>
+         <script>
+         
+             </script>
+     </head>
+     <body ng-controller="topiccontroller">
+        <nav>
+            <div class="nav-wrapper blue">
+              <a href="/home" class="brand-logo center">QUIZINGA</a>
+              <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="/home/givequiz">Give Quiz</a> 
+            </li>
+                &nbsp; &nbsp;&nbsp; &nbsp;
+                <li>
+                    <a href="/profile">Profile</a> 
+                </li>
+    
+                <li>
+                    <a href="/quiz/">Create Quiz</a> 
+                </li>
+                </ul>
+    
+                <ul class="left hide-on-med-and-down">
+                    <li>
+                        <a href="/topics/yourtopics">Your Topics</a> 
+                    </li>
+    
+                    <li>
+                        <a href="/topics/">Create Topic</a> 
+                    </li>
+    
+                    <li>
+                        <a href="/topics/alltopics">All Topics</a> 
+                    </li>
+    
+                    </ul>
+            </div>
+          </nav>
+          <div class="topicimg" style="position: absolute;left:40;top:90">
+                <img ng-src="{{topic.img}}" height="250" width="400">
+          </div>
+          <div class="topicname" style="position: absolute;left:600;top:150">
+                <div class="card-panel blue lighten-1"> <large>{{topic.name}}</large>
+                <medium>{{topic.type}}</medium>
+                </div>
+          </div>
+                   <br><br><br><br><br><br><br><br>                 
+                   <div class="container">
+                        <div class="home">
+                        <div class="row">
+                            <div class="card-panel blue lighten-2">
+                                Post Something:-
+                            </div>
+                            <br>
+                            <div class="input-field col s12">
+                                <label  for="post"><medium>What do you want to post?</medium></label>
+                                <input required name="post" ng-model="post" type="text" class="validate">          
+                              </div>
+                              <input type="file"  ngf-select ng-model="topicImage" name="file"
+                              accept="image/*" >
+                              <img class="image-display" ng-show="myForm.file.$valid"
+                              ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="topicImage" class="thumb">
+                              <br><br>
+                              <button ng-click="postupload()" class="waves-effect waves-light btn-large"><i class="material-icons left">edit</i>POST</button>
+                        </div>
+                        <br><br>
+                        <div ng-repeat="post in posts | orderBy:'-date'">
+                            <div ng-if="post.img">
+                            <div class="card" >
+                                <span class="card-title" style="color:black;">
+                                    <img ng-src="{{post.userimg}}" height="60" width="60">    {{post.username}}:
+                                    <small>{{post.post}}</small>
+                                </span>
+                                <div class="card-image">
+                                <img src="{{post.img}}">
+                                {{post.date}}
+                                </div>
+                                <a title="Loved it?" ng-click="likepost(post.key)" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">favorite</i></a>
+                                <div class="card-content">
+                                <span class="activator grey-text text-darken-4">See Likes & Comments:<i class="material-icons right">more_vert</i></span>                                  
+                                </div>
+                                <div class="card-reveal">
+                                        <span class="card-title grey-text text-darken-4"><div ng-if="post.likes.length">Liked: {{post.likes.length}}</div><i class="material-icons right">close</i></span>
+                                        <div ng-repeat="like in post.likes">
+                                            {{like.username}}
+                                        </div>
+                                        <br><br>
+                                        <span class="card-title grey-text text-darken-4"><div ng-if="post.comments.length">Comments: {{post.comments.length}}</div></span>
+                                        <div ng-repeat="comment in post.comments">
+                                            <img ng-src="{{comment.cmntuserimg}}" height="40" width="40">{{comment.username}} : {{comment.comment}} &nbsp; &nbsp; <a title="Like this comment" ng-click="likecomment(post.key,comment.key)" class="btn-floating waves-effect waves-light red"><i class="material-icons">thumb_up</i></a>
+                                            <br>
+                                            <div ng-if="comment.likes.length">
+                                                Comment liked by: {{comment.likes.length}}
+                                            </div>
+                                            <div ng-repeat="cmnt in comment.likes">
+                                                {{cmnt.username}}
+                                            </div>
+                                        </div>
+                                        <div class="input-field col s12">
+                                            <label for="comment"><medium>Comment?</medium></label>
+                                            <input name="comment" type="text" ng-model="comment">     
+                                            <a title="Add a comment" ng-click="commentpost(post.key,comment)" class="btn-floating waves-effect waves-light red"><i class="material-icons">comment</i></a>
+                                        </div>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div ng-if="!post.img">
+                            <div class="card light-blue darken-0">
+                                <span class="card-title">
+                                    <img ng-src="{{post.userimg}}" height="60" width="60">
+                                    {{post.username}}
+                                </span>
+                                <div class="date"><br>{{post.date}}</div>
+                                <a title="Loved it?" ng-click="likepost(post.key)" class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">favorite</i></a>    
+                                <div class="card-content white-text">
+                                {{post.post}}  
+                                </div>
+                                <div class="card-content">
+                                    <span class="activator grey-text text-darken-4">See Likes & Comments:<i class="material-icons right">more_vert</i></span>                                  
+                                </div>
+                                    <div class="card-reveal">
+                                            <span class="card-title grey-text text-darken-4"><div ng-if="post.likes.length">Liked: {{post.likes.length}}</div><i class="material-icons right">close</i></span>
+                                            <div ng-repeat="like in post.likes">
+                                                {{like.username}}
+                                            </div>
+                                            <span class="card-title grey-text text-darken-4"><div ng-if="post.comments.length">Comments: {{post.comments.length}}</div></span>
+                                            <div ng-repeat="comment in post.comments">
+                                                <img ng-src="{{comment.cmntuserimg}}" height="40" width="40"> {{comment.username}} : {{comment.comment}} &nbsp; &nbsp; <a title="Like this comment" ng-click="likecomment(post.key,comment.key)" class="btn-floating waves-effect waves-light red"><i class="material-icons">thumb_up</i></a>
+                                                <br><br>
+                                                <div ng-if="comment.likes.length">
+                                                Comment liked by: {{comment.likes.length}}
+                                                <div ng-repeat="cmnt in comment.likes">
+                                                    {{cmnt.username}}
+                                                </div>
+                                                <br><br>
+                                                </div>
+                                            </div>
+                                            <div class="input-field col s12">
+                                                <label for="comment"><medium>Comment?</medium></label>
+                                                <input name="comment" type="text" ng-model="comment">
+                                                <a title="Add a comment" ng-click="commentpost(post.key,comment)" class="btn-floating waves-effect waves-light red"><i class="material-icons">comment</i></a>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                        </div>
+                        </div>
+                    </div>
+                <a title="Logout" href="/users/logout" style="position: absolute;right:30;top:90" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">arrow_drop_down_circle</i></a>
+                <div class="fixed-action-btn toolbar">
+                        <a class="btn-floating btn-large blue">
+                          <i class="large material-icons">person</i>
+                        </a>
+                        <ul>
+                          <li class="waves-effect waves-light"><a ng-click="contacts()"><i class="material-icons">contacts</i></a></li>
+                          <li class="waves-effect waves-light"><a ng-click="messages()" href="#!"><i class="material-icons">message</i></a></li>
+                          <li class="waves-effect waves-light"><a ng-click="notify()" href="#!"><i class="material-icons">notifications</i></as></li>
+                       </ul>
+                      </div>
+                   
+     </body>
+    
+    </html>

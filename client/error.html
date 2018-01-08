@@ -1,0 +1,38 @@
+<html>
+  <title>
+    Error
+  </title>
+
+  <body>
+    <p>An error occured</p>
+  </body>
+</html>
+
+<img ng-src="{{post.userimg}}" height="60" width="60">
+<medium>{{post.username}}</medium>
+posted at: &nbsp; &nbsp; {{post.date}}
+<br> 
+<small>{{post.post}}</small>
+<br>
+<div ng-if="post.img">
+    <img ng-src="{{post.img}}" height="200" width="200">
+    <br>
+</div>
+Liked by people: {{post.likes.length}}
+<div ng-repeat="like in post.likes">
+    {{like.username}}
+</div>
+<button ng-click="likepost(post.key)">Like</button>
+
+<input type="text" ng-model="comment">
+<button ng-click="commentpost(post.key,comment)">Comment</button>
+<div ng-repeat="cmnt in post.comments">
+    {{cmnt.username}} &nbsp; : {{cmnt.comment}} &nbsp; &nbsp;  <button ng-click="likecomment(post.key,cmnt.key)">Like</button>
+    <br>
+    Liked by people: {{cmnt.likes.length}}
+    <div ng-repeat="commentlike in cmnt.likes">
+        {{commentlike.username}}
+    </div>
+</div>
+<br>
+<br><br>

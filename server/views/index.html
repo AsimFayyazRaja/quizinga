@@ -1,0 +1,163 @@
+<html ng-app="myApp">
+  <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   <!-- jQuery library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+   <!-- Latest compiled JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   <!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+<script src="http://code.angularjs.org/1.2.13/angular-animate.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+
+	<script>
+
+var app=angular.module('myApp', ['ngCookies','ngFileUpload', 'ngRoute'])
+.config(['$locationProvider', function($locationProvider) {
+ $locationProvider.html5Mode(false);
+ $locationProvider.hashPrefix('');
+}]);
+
+app.controller('indexcontroller',function($scope,$http,$cookies,$window,$route){
+$scope.message="Profile here";
+$scope.email="";
+$scope.passw="";
+$scope.correct;
+
+$scope.loginwithgoogle=function(){
+  $http.post('/users/loginwithgoogle').then(function(res){
+    console.log(res.data);
+  });
+}
+
+$scope.login=function(){
+  console.log($scope.email);
+
+  console.log($scope.passw);
+
+  var data={email: $scope.email,
+  pass: $scope.passw};
+  $http.post('/users/login',{data:data}).then(function(res){
+    console.log(res.data);
+  })
+}
+
+});
+
+</script>
+
+	<body style="background-color:rgb(9, 145, 194)" ng-controller="indexcontroller">		
+      <nav>
+          <div class="nav-wrapper blue">
+            <a class="brand-logo center">QUIZINGA</a>
+          </div>
+        </nav>
+      
+		<div class="container">
+        <div class="row">
+            <br>
+            <div class="col s4">
+  <div class="row">
+
+      
+        <div class="card">
+          <div class="card-image">
+            <img src="https://arabacademy-u8hapu3mdn.netdna-ssl.com/wp-content/uploads/2015/04/loginImage-400x300.jpg">
+            <form>
+                <div class="row">
+                  <div class="input-field col s8">
+                      <i class="material-icons prefix">email</i>
+                    <input ng-model="email" name="emaile" type="email">
+                    <label for="emaile" data-error="Wrong" data-success="Right">Email</label>
+                  </div>
+                  <br>
+                  <div class="input-field col s8">
+                      <i class="material-icons prefix">account_circle</i>
+                      <input id="icon_prefix" ng-model="passw" name="passw" type="password" class="validate" required>
+                      <label for="icon_prefix">Password</label>
+                    </div>
+                </div>
+                <button class="btn btn-floating btn-large cyan pulse" ng-click="login()">Login</button>
+              </form>
+          </div>
+          <div class="card-content">
+            <p>Login here to enter the fun app or click below to login with other social accounts.</p>
+          </div>
+        </div>
+    
+    </div>
+            </div>
+
+            <div class="col s4"></div>
+
+            <div class="col s4">
+                <div class="row">
+                            <div class="card">
+                              <div class="card-image">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgsnLjYLPMwaqxyF5sJVIG3VfwKtQHVvnUt4tcSBe6IosVfAbG">
+                                <form>
+                                    <div class="row">
+                                      <div class="input-field col s8">
+                                        <i class="material-icons prefix">email</i>
+                                        <input id="email" type="email" class="validate" required>
+                                        <label for="email" data-error="Wrong" data-success="Right">Email</label>
+                                      </div>
+                                      <br>
+                                      <div class="input-field col s8">
+                                          <i class="material-icons prefix">person</i>
+                                          <input id="name" type="text" class="validate" required>
+                                          <label for="email" data-error="Wrong" data-success="Right">Full Name</label>
+                                        </div>
+                                        <br>
+                                        <div class="input-field col s10">
+                                            <i class="material-icons prefix">date_range</i>
+                                            <input id="date" type="date" required>
+                                          </div>
+                                      <br>
+                                      <div class="input-field col s8">
+                                          <i class="material-icons prefix">account_circle</i>
+                                          <input id="password" type="password" class="validate" required>
+                                          <label for="password">Password</label>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-floating btn-large cyan pulse" onclick="f1()">SignUp</button>
+                                  </form>
+                              </div>
+                              <div class="card-content">
+                                <p>Signup here to enter the fun app or click below to signup with other social accounts.</p>
+                              </div>
+                            </div>
+                        
+                        </div>
+                        
+            </div>  
+        </div>
+
+  </div>
+  
+  <div class="fixed-action-btn horizontal click-to-toggle">
+      <a class="btn-floating btn-large black">
+          <i class="material-icons">menu</i>
+      </a>
+      <ul>
+          <li>
+              <a href="/users/auth/facebook" class="waves-effect waves-light btn-floating social facebook black"><i class="fa fa-facebook"></i></a>
+          </li>
+          <li>
+              <a href="/users/auth/google" class="waves-effect waves-light btn-floating google black"><i class="fa fa-google"></i></a>
+          </li>
+      </ul>
+    </div>
+
+	</body>
+
+</html>

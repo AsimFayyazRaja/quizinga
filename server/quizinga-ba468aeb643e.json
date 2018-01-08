@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "quizinga-183118",
+  "private_key_id": "ba468aeb643ea1afc0069849ac190cf259505ad3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDS2afl8oIBbuaB\nUwdEQO5/jPeL7ItTHxFPC9WLfA/rZiOvjS5v+xPhI92hV5D6xNyhbhO98Wr45bZy\nbZyqvdFSLw1GG08rEKH0hmHrVqe0gZMWIKYv9a8Qf+JJzYPvn22aaz3F7/f7so8k\nw8TrtX213mMJfXl+c/IYZwZgWNmPPGJSdE0gTSi2s5LxsM64/SKX6l1h+Ry+3r3C\nEvFIMcJ0d+zGJ5mRuMAVkTnNa3YNxq8ZUjVhBzvOeMFVP0uv7bpaElnsgPe/UYpV\nsDVyeVw3BMRpmyjmDDaZXUwOg5qEV9WNZIhFYUsEc4gRGElLDPKlxqP29A0SBP1t\nB2nx1qKhAgMBAAECggEABVoX/Gq46Q9nE25Hl3BsfVlXKTqSWMRHnLGItJcsEkYP\n7tNPE/GUEhlmdUNzPyJDFWflYWNg2zt9c48btGvIBeWC2T41Nrsf2USV9LLI4/iM\nArpGbZ43WNxeIpBwYmMyFYLWWRFbwoxIPN8pPvBm5fhknCeOr2qDASKQU169+vg6\nD5rayH0tyr85QzNVZmbnnrzOhkh5/ciIRclRHaIMJJyNa/6wSHV9A8c/tW+2znOO\nXofSgSGLBm5EjDf7n+U87whBseKAavdU1OR9ss7oNyOI1ZkPrKQsaex88BOgqaGe\nLj0O5HT5rfdkprMhRjehk2VctEhh1fRyw4YoIlJ8aQKBgQD/hTvRm1iOaeJYSdxL\ndfyHm8xVNmVCOJAY9DndkZ5vBAtgMgVKHGtwU5DZ8/5qhugiRoY7v38OQf1zGjxa\nCD1Nk8l3YC24q35QvUs8R4Rh8DrTfgB2LcMNf/uWlO0/5xgRXVGeEkGRqVvWcGJm\nk0pkXye4DR1N2tDeWJpflg+k3QKBgQDTPvXJkR5rEQcXComNOn3LIZnzsE9Al53Q\nE2S/2XvkTewLOY0lWI8uedzAFJwFk5Yr2525nnJgzIhjxwyCaNhi4kOKbEkK/WU5\nGWIwcjFgdDm/gCBjgtTi6MRMW0KtNvHFmEyatkK2q/OqOgVgAn1CU2dGJibAs+PB\nhHjJ9TCGlQKBgEUVianPPW8rs5W5SoVgfglQFzvGvDPeRR9qEKcWMubDCixU+dci\nve2dumEjNdspZGO3+5z11m1NbDANnNmetqxd06+h4lq2iy1bMJc4otMz90OtIoTR\nNJZWzvfUhhyr53byaxm4x9+REZJ1yjT/h7KBg6SgbxbYnXYwMHS9hrdFAoGASfIn\nHajz6eyq+7DPl6Va9WlMt9YG2Ah60KSJRvL9gFyafQ9nTiRi8pTr5j0QpI8WKUIW\nQyyowyO1tp+tzFShMnQbym+/Xd53uXYePfErQaVNtbBHJi5dERUD6eqkO3gZR97Z\nKesVDVbB09u9l+8nI7mIVDD0rc4KsuoJUkDG/MUCgYBqpOriNljJqtGnVNEDgMgI\n6XScz3zWaU4+3Eff58xEubgNvGAvQDFV5KnPQ9+Ao8AWcRBvYsw9aXeh8ySf7Cdp\npnN9G9EObjocUOjVXZ8XXoish+kA7tarAXBo8JamgokUSfODT16IW/BFWHhZwqqd\nCwdVpY4d4Ia/4jnxP/jZ3A==\n-----END PRIVATE KEY-----\n",
+  "client_email": "quizinga@quizinga-183118.iam.gserviceaccount.com",
+  "client_id": "113161525310672260460",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/quizinga%40quizinga-183118.iam.gserviceaccount.com"
+}

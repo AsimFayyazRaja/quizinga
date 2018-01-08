@@ -1,0 +1,182 @@
+<html ng-app="myApp">
+    <!-- Latest compiled and minified CSS -->
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+     <!-- jQuery library -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <!-- Latest compiled JavaScript -->
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+<script src="http://code.angularjs.org/1.2.13/angular-animate.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+
+
+
+<style>
+   .profile{
+     margin-left: 20px;
+ margin-right: 20px;
+ margin-top: 20px;
+ min-height: 20px;
+   }
+   body {
+ background-color:whitesmoke;
+}
+
+.home{
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 100px;
+    min-height: 200px;
+}
+
+</style>
+<script>
+var app=angular.module('myApp', ['ngCookies','ngFileUpload', 'ngRoute'])
+.config(['$locationProvider', function($locationProvider) {
+ $locationProvider.html5Mode(false);
+ $locationProvider.hashPrefix('');
+}]);
+
+app.controller('homecontroller',function($scope,$http,$cookies,$window,$route){
+$scope.message="Profile here";
+
+    $scope.notify=function(){
+        console.log("notify clicked");
+    }
+
+    $scope.messages=function(){
+        console.log("messages clicked");
+    }
+
+    $scope.contacts=function(){
+        console.log("contacts clicked");
+    }
+
+    $scope.home=function(){
+        console.log("home clicked");
+    }
+
+    $scope.queupload=function(){       
+        var img=$scope.queImage;
+        console.log(img);
+        var formdata = new FormData();
+        formdata.append('img',img);
+        $http.post('/profile/upload-dp',formdata,{
+            transformRequest:angular.identity,
+            headers:{'Content-Type': undefined}
+        }).then(function(res){
+            console.log(res);
+    });
+
+    
+}
+
+$http.get('/profile/userprofile').then(function(res){
+        console.log(res.data);
+        $scope.name=res.data.name;
+        $scope.dp=res.data.img;
+    },function(error){
+        console.log("error");
+    });
+});
+
+</script>
+
+<title ng-controller="homecontroller">
+        {{message}}
+</title>
+
+
+    <body ng-controller="homecontroller">
+        <nav>
+            <div class="nav-wrapper blue">
+              <a href="/home" class="brand-logo center">QUIZINGA</a>
+              <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="/home/givequiz">Give Quiz</a> 
+            </li>
+                &nbsp; &nbsp;&nbsp; &nbsp;
+                <li>
+                    <a href="/profile">Profile</a> 
+                </li>
+
+                <li>
+                    <a href="/quiz/">Create Quiz</a> 
+                </li>
+
+                </ul>
+
+                <ul class="left hide-on-med-and-down">
+                    <li>
+                        <a href="/topics/yourtopics">Your Topics</a> 
+                    </li>
+
+                    <li>
+                        <a href="/topics/">Create Topic</a> 
+                    </li>
+
+                    <li>
+                        <a href="/topics/alltopics">All Topics</a> 
+                    </li>
+
+                    </ul>
+            </div>
+          </nav>
+        <br><br>
+              <div class="profile">
+              <img ng-src="{{dp}}" height="200" width="200" style="float:left;">
+
+              <br><br>
+              &nbsp; &nbsp; &nbsp; <input type="file"  ngf-select ng-model="queImage" name="file"
+              accept="image/*" >
+              
+              <img class="image-display" ng-show="myForm.file.$valid"
+              ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="queImage" class="thumb">
+              <br>
+              <button ng-click="queImage = null" ng-show="queImage" class="waves-effect waves-light btn">Remove</button>
+              <button ng-click="queupload()" ng-show="queImage" class="waves-effect waves-light btn">Add as question's pic</button>
+              
+              &nbsp; &nbsp; &nbsp; <button ng-click="viewlikes()">View Likes</button><br><br>
+              &nbsp; &nbsp; &nbsp; <button ng-click="viewcomments()">View Comments</button>
+              
+              <br><br><br><br><br>
+              <p>{{name}}</p>
+        <div class="container">
+            <div class="home">
+            <div class="row">
+                <p>Your profile here</p>
+                
+            </div>
+            </div>
+        </div>
+    </div>
+
+        
+    
+    <a title="Logout" href="/users/logout" style="position: absolute;right:30;top:90" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">arrow_drop_down_circle</i></a>
+    
+        <div class="fixed-action-btn toolbar">
+            <a title="Notifications" class="btn-floating btn-large blue">
+              <i class="large material-icons">person</i>
+            </a>
+            <ul>
+              <li class="waves-effect waves-light"><a ng-click="contacts()"><i class="material-icons">contacts</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="messages()" href="#!"><i class="material-icons">message</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="notify()" href="#!"><i class="material-icons">notifications</i></as></li>
+           </ul>
+          </div>
+    
+
+</body>
+
+    </html>

@@ -1,0 +1,310 @@
+<html ng-app="myApp">
+       <!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<!-- jQuery library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+  <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+  <script src="http://code.angularjs.org/1.2.13/angular-animate.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+
+
+  <style>
+      .ques{
+        margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 200px;
+    min-height: 2000px;
+      }
+      body {
+    background-color:whitesmoke;
+}
+
+
+  </style>
+  
+<script>
+
+function showHint(str) {
+    if (str.length == 0) {
+        document.getElementById("txtHint").innerHTML = "";
+        return;
+    } else {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.response);
+                document.getElementById("txtHint").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET", "http://localhost:8000/questions/existsornot?str=" + str, true);
+        xmlhttp.send();
+    }
+}
+
+
+</script>
+
+  <script>
+var app=angular.module('myApp', ['ngCookies','ngFileUpload', 'ngRoute'])
+.config(['$locationProvider', function($locationProvider) {
+    $locationProvider.html5Mode(false);
+    $locationProvider.hashPrefix('');
+ }]);
+
+
+app.controller('quecontroller',function($scope,$http,$cookies,$window,$route){
+//$scope.count=1;
+$scope.next=false;
+$scope.err;
+
+$scope.test=function(){
+    $http.get( "/questions/test").then(function( data ) {
+  $scope.A= data; //from your sample;
+  console.log(data);
+});
+}
+
+$scope.questionupload=function(){   //do the plainn text questions now
+    var data={
+            que: $scope.que,
+            correct: $scope.correct,
+            wrong1: $scope.wronganswer1,
+            wrong2: $scope.wronganswer2,
+            wrong3: $scope.wronganswer3
+        };
+        if(data.correct.length>150 || data.wrong1.length>150
+        || data.wrong2.length>150 ||  data.wrong3.length>150){
+            alert("Any option's length can't exceed 100." + data.correct.length +" " +data.wrong1.length
+            +"  "+ data.wrong2.length + "   "+ data.wrong3.length);
+            return;
+        }
+        var queimg=$scope.queImage;
+        var cans=$scope.cansImage;
+        var wrong1=$scope.wrongImage1;
+        var wrong2=$scope.wrongImage2;
+        var wrong3=$scope.wrongImage3;
+
+        var formdata = new FormData();
+
+        formdata.append('ques',$scope.que);
+        formdata.append('crct',$scope.correct);
+        formdata.append('wr1',$scope.wronganswer1);
+        formdata.append('wr2',$scope.wronganswer2);
+        formdata.append('wr3',$scope.wronganswer3);
+
+        formdata.append('que',queimg);
+        formdata.append('cans',cans);
+        formdata.append('wrong1',wrong1);
+        formdata.append('wrong2',wrong2);
+        formdata.append('wrong3',wrong3);
+        
+    $http.post('/questions/addanew',formdata,{
+            transformRequest:angular.identity,
+            headers:{'Content-Type': undefined}
+        }).then(function(res){
+        console.log(res.data);
+        if(res.data=="success"){
+        $scope.count++;
+        $scope.que="";
+        $scope.correct="";
+        $scope.wronganswer1="";
+        $scope.wronganswer2="";
+        $scope.wronganswer3="";
+        $scope.queImage=null;
+        $scope.cansImage=null;
+        $scope.wrongImage1=null;
+        $scope.wrongImage2=null;
+        $scope.wrongImage3=null;
+        }else if(res.data=="topic error"){
+            $scope.err="Please select a topic in which this question you want to add.";
+            alert($scope.err);
+        }
+        else{
+            $scope.err="Please enter a valid question."
+            alert($scope.err);
+        }
+        //window.location.replace('/questions');
+        //$scope.next=true;
+        
+    });
+}
+
+$http.get('/questions/currentcount').then(function(res){
+    console.log(res.data.toreturn);
+    if(res.data=="notfound"){
+        $scope.count=0;
+    }else{
+        console.log(res.data);
+        $scope.count=res.data.count;
+        $scope.name=res.data.topicName;
+        $scope.type=res.data.topicType;
+    }
+    
+});
+
+
+});
+  </script>
+
+  <title>
+      Add Questions
+    </title>
+
+    <head>
+        <script>
+        
+            </script>
+    </head>
+    <body ng-controller="quecontroller">
+           
+        
+      <nav>
+        <div class="nav-wrapper blue">
+          <a href="/home" class="brand-logo center">QUIZINGA</a>
+          <ul class="right hide-on-med-and-down">
+            <li>
+                <a href="/home/givequiz">Give Quiz</a>
+        </li>
+            &nbsp; &nbsp;&nbsp; &nbsp;
+            <li>
+                <a href="profile">Profile</a> 
+            </li>
+
+            <li>
+                <a href="/quiz/">Create Quiz</a> 
+            </li>
+
+            </ul>
+
+            <ul class="left hide-on-med-and-down">
+                <li>
+                    <a href="/topics/yourtopics">Your Topics</a> 
+                </li>
+                <li>
+                    <a href="/topics/">Create Topic</a> 
+                </li>
+
+                <li>
+                    <a href="/topics/alltopics">All Topics</a> 
+                </li>
+
+                </ul>
+        </div>
+      </nav>
+                  
+                  <br>
+                  <div class="card-panel blue lighten-2"><h5>Question number: {{count}} </h5></div>
+        <div class ="ques">
+                <div class="card-panel blue lighten-2"><h5> The questions added will be added in the topic name
+                    : {{name}} and type: {{type}}
+                      </h5></div>
+    <br>         
+            <form method="post">
+                <div class="input-field col s12">
+                        <label  for="que"><h5>Enter question here:</h5></label>
+                        <br>
+                        <input name="que" ng-model="que" type="text" class="validate" onkeyup="showHint(this.value)">          
+                      </div>
+
+                    <div class="card-panel blue lighten-3" id="txtHint">
+                        
+                    </div>                        
+            <fieldset class="pic-select">
+                    <label>Add a picture for this question</label><br>
+                    <input type="file"  ngf-select ng-model="queImage" name="file"
+                    accept="image/*" >
+                    <img class="image-display" ng-show="myForm.file.$valid"
+                    ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="queImage" class="thumb">
+                    <br>
+                    
+                    <div><h5>{{progressDisp}}</h5></div>
+                    </fieldset>
+        
+            <br><br><br>
+            <div class="card-panel blue lighten-2"><h5>Add answers here</h5></div>
+            <br><br>
+            <div class="input-field col s12">
+            <label  for="que"><h5>Enter correct answer here:</h5></label>
+            <br>
+            <input name="correct" ng-model="correct" type="text" class="validate">          
+          </div>
+            <fieldset class="pic-select">
+                    <label>Add a picture for this answer</label><br>
+                    <input type="file" ngf-select ng-model="cansImage" name="file"
+                    accept="image/*" >
+                    <img class="image-display" ng-show="myForm.file.$valid"
+                    ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="cansImage" class="thumb">
+                    <br>
+                    
+                    <div><h5>{{progressDisp}}</h5></div>
+                    </fieldset>
+                    <br><br>
+                    <div class="input-field col s12">
+                    <label  for="que"><h5>Enter another option here:</h5></label>
+                    <br>
+                    <input name="wrong1" ng-model="wronganswer1" type="text" class="validate">          
+                  </div>
+
+            <fieldset class="pic-select">
+                    <label>Add a picture for this answer</label><br>
+                    <input type="file" ngf-select ng-model="wrongImage1" name="file"
+                    accept="image/*" >
+                    <img class="image-display" ng-show="myForm.file.$valid"
+                    ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="wrongImage1" class="thumb">
+                    <br>
+                    
+                    <div><h5>{{progressDisp}}</h5></div>
+                    </fieldset>
+                    <br><br>
+                    <div class="input-field col s12">
+                    <label  for="que"><h5>Enter another option here:</h5></label>
+                    <br>
+                    <input name="wrong2" ng-model="wronganswer2" type="text" class="validate">          
+                  </div>
+                    <fieldset class="pic-select">
+                    <label>Add a picture for this answer</label><br>
+                    <input type="file" ngf-select ng-model="wrongImage2" name="file"
+                    accept="image/*" >
+                    <img class="image-display" ng-show="myForm.file.$valid"
+                    ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="wrongImage2" class="thumb">
+                    <br>
+                    
+                    <div><h5>{{progressDisp}}</h5></div>
+                    </fieldset>
+                    <br><br>
+                    <div class="input-field col s12">
+                    <label  for="que"><h5>Enter another option here:</h5></label>
+                    <br>
+                    <input name="wrong3" ng-model="wronganswer3" type="text" class="validate">          
+                  </div>
+                    <fieldset class="pic-select">
+                    <label>Add a picture for this answer</label><br>
+                    <input type="file" ngf-select ng-model="wrongImage3" name="file"
+                    accept="image/*" >
+                    <img class="image-display" ng-show="myForm.file.$valid"
+                    ngf-resize="{width: 100, height: 100, quality: 0.9}" ngf-src="wrongImage3" class="thumb">
+                    <br>
+                    
+                    <div><h5>{{progressDisp}}</h5></div>
+                    </fieldset>
+                    <br><br>
+            <button ng-click="questionupload()" class="waves-effect waves-light btn-large"><i class="material-icons left">cloud</i>Add it</button>
+            <br><br>        
+        </form>
+        </div>
+        <a title="Logout" href="/users/logout" style="position: absolute;right:30;top:230" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">arrow_drop_down_circle</i></a>
+        
+    </body>
+</html>

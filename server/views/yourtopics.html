@@ -1,0 +1,159 @@
+<html ng-app="yourtopic">
+    <!-- Latest compiled and minified CSS -->
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+     <!-- jQuery library -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+     <!-- Latest compiled JavaScript -->
+     <!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<!-- Compiled and minified JavaScript -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+
+<head>
+<style>
+   .ques{
+     margin-left: 200px;
+ margin-right: 200px;
+ margin-top: 200px;
+ min-height: 2000px;
+   }
+   body {
+ background-color:whitesmoke;
+}
+
+.home{
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 50px;
+    min-height: 100px;
+}
+
+</style>
+</head>
+
+<script>
+var app=angular.module('yourtopic', ['ngCookies','ngFileUpload', 'ngRoute'])
+.config(['$locationProvider', function($locationProvider) {
+ $locationProvider.html5Mode(false);
+ $locationProvider.hashPrefix('');
+}]);
+
+app.controller('yourtopicscontroller',function($scope,$http,$cookies,$window,$route){
+$scope.message="Your Topics";
+
+$scope.addquestions=function(topic){
+    console.log("Add questions in:" + topic);
+    $http.post('/questions/addintopic',{topic:topic}).then(function(res){
+        if(res.data=="can add now"){
+            $window.location.href="http://localhost:8000/questions";
+        }
+    });
+}
+
+$http.get('/topics/mytopics').then(function(res){
+    console.log(res.data);
+    $scope.yourtopics=res.data;
+});
+
+$scope.viewposts=function(topic){
+  console.log("You will view here" , topic +"'s posts");
+  $http.post('/posts/topicspost',{topic:topic}).then(function(res){
+    if(res.data=="viewpostsnow"){
+        console.log("in viewposts");
+        $window.location.href="http://localhost:8000/posts/viewposts";
+    }
+  });
+};
+
+});
+</script>
+
+<title ng-controller="yourtopicscontroller">
+        {{message}}
+</title>
+
+
+    <body ng-controller="yourtopicscontroller">
+        <nav>
+            <div class="nav-wrapper blue">
+              <a href="/home" class="brand-logo center">QUIZINGA</a>
+              <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="/home/givequiz">Give Quiz</a> 
+            </li>
+                &nbsp; &nbsp;&nbsp; &nbsp;
+                <li>
+                    <a href="/profile">Profile</a> 
+                </li>
+
+                <li>
+                    <a href="/quiz/">Create Quiz</a> 
+                </li>
+
+                </ul>
+
+                <ul class="left hide-on-med-and-down">
+                    <li>
+                        <a href="/topics/yourtopics">Your Topics</a> 
+                    </li>
+
+                    <li>
+                        <a href="/topics/">Create Topic</a> 
+                    </li>
+
+                    <li>
+                        <a href="/topics/alltopics">All Topics</a> 
+                    </li>
+
+                    </ul>
+            </div>
+          </nav>
+            
+          <div class="container">
+            <div class="home">
+          <div class="card-panel blue lighten-1" class="row">
+            
+            Here will are all of the topics you created so far.
+            
+           </div>
+           </div>
+           </div>
+           <div class="container">
+            <div class="home">
+            <div class="row">
+                <div ng-repeat="topic in yourtopics">
+                        <div class="card-panel blue lighten-2"> <p>The topic name is: &nbsp; &nbsp;  {{topic.name}} &nbsp; &nbsp;</p>   
+                         <p> The topic type is: &nbsp; &nbsp; {{topic.type}} &nbsp; &nbsp; &nbsp; &nbsp;
+                        <a title="Add questions in this topic" ng-click="addquestions(topic)" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">add</i></a>
+                        &nbsp; &nbsp; &nbsp;
+                        <a title="View its posts" ng-click="viewposts(topic)" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">visibility</i></a>
+                    </p> 
+                    </div>
+                    <br><br>
+                </div>
+                
+            </div>
+            </div>
+        </div>
+
+        <a title="Logout" href="/users/logout" style="position: absolute;right:30;top:90" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">arrow_drop_down_circle</i></a>
+        
+        <div class="fixed-action-btn toolbar">
+            <a title="Notifications" class="btn-floating btn-large blue">
+              <i class="large material-icons">person</i>
+            </a>
+            <ul>
+              <li class="waves-effect waves-light"><a ng-click="contacts()"><i class="material-icons">contacts</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="messages()" href="#!"><i class="material-icons">message</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="notify()" href="#!"><i class="material-icons">notifications</i></as></li>
+           </ul>
+          </div>
+    
+</body>
+
+    </html>

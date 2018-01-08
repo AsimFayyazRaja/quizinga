@@ -1,0 +1,225 @@
+<html ng-app="myApp">
+    <!-- Latest compiled and minified CSS -->
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+     <!-- jQuery library -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <!-- Latest compiled JavaScript -->
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+     <!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+<script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+<script src="http://code.angularjs.org/1.2.13/angular-animate.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-materialize/0.2.2/angular-materialize.min.js"></script>
+
+
+
+<style>
+   .ques{
+     margin-left: 200px;
+ margin-right: 200px;
+ margin-top: 200px;
+ min-height: 2000px;
+   }
+   body {
+ background-color:whitesmoke;
+}
+
+.home{
+    margin-left: 200px;
+    margin-right: 200px;
+    margin-top: 100px;
+    min-height: 200px;
+}
+
+</style>
+<script>
+var app=angular.module('myApp', ['ngCookies','ngFileUpload', 'ngRoute'])
+.config(['$locationProvider', function($locationProvider) {
+ $locationProvider.html5Mode(false);
+ $locationProvider.hashPrefix('');
+}]);
+
+app.controller('homecontroller',function($scope,$http,$cookies,$window,$route){
+$scope.message="Home here";
+$scope.showsearch=false;
+    $scope.notify=function(){
+        console.log("notify clicked");
+    }
+
+    $scope.messages=function(){
+        console.log("messages clicked");
+    }
+
+    $scope.contacts=function(){
+        console.log("contacts clicked");
+    }
+
+    $scope.search=function(){
+        var searchtxt=$scope.searchtext;
+        $http.post('/home/searchthis',{str:searchtxt}).then(function(res){
+            console.log("got response");
+            $scope.searchresult=res.data;
+            console.log($scope.searchresult);
+            if($scope.searchresult.length>0)
+            $scope.showsearch=true;
+            else{
+                Materialize.toast('No result found!', 2000);
+            }
+        });
+    }
+
+    $scope.hidesearch=function(){
+        $scope.showsearch=false;
+    }
+
+    $scope.followthistopic=function(name,type){
+        var topic=name+type;
+        console.log(topic);
+        $http.post('/topics/followtopic',{topic:topic}).then(function(res){
+            if(res.data){
+                Materialize.toast(res.data+" "+topic+" !!", 3000);
+                $scope.search();
+            }
+        });
+    }
+
+    $scope.followperson=function(email,user){
+        $http.post('/home/followuser',{email:email,name: user}).then(function(res){
+            if(res.data){
+                Materialize.toast(res.data+" "+user+" !!", 3000);
+                $scope.search();
+            }
+        });
+    }
+    $http.get('/home/gethome',function(req,res,next){
+        $scope.arr=res.data;
+    });
+});
+</script>
+
+<title>
+        Home
+</title>
+
+
+    <body ng-controller="homecontroller">
+        <nav>
+                <div class="nav-wrapper blue">
+                  <a href="/home" class="brand-logo center">QUIZINGA</a>
+                  <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a href="/home/givequiz">Give Quiz</a> 
+                </li>
+                    &nbsp; &nbsp;&nbsp; &nbsp;
+                    <li>
+                        <a href="/profile">Profile</a> 
+                    </li>
+
+                    <li>
+                        <a href="/quiz/">Create Quiz</a> 
+                    </li>
+
+                    </ul>
+
+                    <ul class="left hide-on-med-and-down">
+                        <li>
+                            <a href="/topics/yourtopics">Your Topics</a> 
+                        </li>
+
+                        <li>
+                            <a href="/topics/">Create Topic</a> 
+                        </li>
+
+                        <li>
+                            <a href="/topics/alltopics">All Topics</a> 
+                        </li>
+                        
+
+                        </ul>
+                </div>
+              </nav>
+
+              <div style="position: absolute;left:30;top:90" class="input-field col s6 s12 blue-text">
+                <i class="blue-text material-icons prefix">search</i>
+                <input type="text" ng-model="searchtext" placeholder="Search topic or people" id="autocomplete-input" class="autocomplete blue-text" >
+                <a title="Search" ng-click="search()" style="position: absolute;left:240;top:10" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">search</i></a>
+                </div>
+              <a title="Logout" href="/users/logout" style="position: absolute;right:30;top:90" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">arrow_drop_down_circle</i></a>
+        <div ng-if="searchresult.length" class="searchresults" style="position: absolute;left:250;top:200" ng-show="showsearch">
+            <div ng-repeat="result in searchresult">
+                <div ng-if="result.email">
+                <div class="card">
+                    <span class="card-title" style="color:black;">
+                        <img src="{{result.userimg}}" height="60" width="60"><medium>{{result.username}}:</medium> &nbsp; &nbsp;
+                        <small>{{result.email}}</small>  
+                    </span>
+                    <div ng-if="result.userflag">
+                        <a title="Unfollow?" ng-click="followperson(result.email,result.username)" class="btn-floating halfway-fab waves-effect waves-light blue"><i class="material-icons">star</i></a>
+                    </div>
+                    <div ng-if="!result.userflag">
+                        <a title="Follow?" ng-click="followperson(result.email,result.username)" class="btn-floating halfway-fab waves-effect waves-light blue"><i class="material-icons">star_border</i></a>
+                    </div>
+                </div>
+                </div>
+                <div ng-if="result.type">
+                <div class="card">
+                        <span class="card-title" style="color:black;">
+                        <img src="{{result.topicimg}}" height="90" width="90">
+                        <medium>{{result.name}}</medium>    
+                        <small> {{result.type}}</small>
+                        </span>
+                        <div ng-if="result.followflag">
+                            <a title="Unfollow?" ng-click="followthistopic(result.name,result.type)" class="btn-floating halfway-fab waves-effect waves-light blue"><i class="material-icons">radio_button_checked</i></a>        
+                        </div>
+                        <div ng-if="!result.followflag">
+                            <a title="Follow?" ng-click="followthistopic(result.name,result.type)" class="btn-floating halfway-fab waves-effect waves-light blue"><i class="material-icons">radio_button_unchecked</i></a>
+                        </div>
+                        <div ng-if="result.description">
+                            <div class="card-content">
+                                    Description: {{result.description}}
+                                    <br>
+                                    <strong>Made by: </strong> <small>{{result.username}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button ng-click="hidesearch()" class="waves-effect waves-light btn-large"><i class="material-icons left">highlight_off</i>Hide</button>
+        </div>
+        <br>
+        <div class="container">
+            <div class="home">
+            <div class="row" ng-hide="showsearch">
+                Here you'll see the latest posts and stuff about the topics you follow
+                and the people who are your friends.
+                <br><br>
+                <div ng-repeat="data in arr">
+                    {{data}}
+                </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="fixed-action-btn toolbar">
+            <a title="Notifications" class="btn-floating btn-large blue">
+              <i class="large material-icons">person</i>
+            </a>
+            <ul>
+              <li class="waves-effect waves-light"><a ng-click="contacts()"><i class="material-icons">contacts</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="messages()" href="#!"><i class="material-icons">message</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="notify()" href="#!"><i class="material-icons">notifications</i></as></li>
+           </ul>
+          </div>
+</body>
+
+    </html>

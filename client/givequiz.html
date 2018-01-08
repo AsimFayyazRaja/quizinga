@@ -1,0 +1,276 @@
+<html ng-app="home">
+    
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!-- jQuery library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!-- Compiled and minified CSS -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+   <!-- Compiled and minified JavaScript -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+   <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
+   <script src="http://code.angularjs.org/1.2.13/angular-animate.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-materialize/0.2.2/angular-materialize.min.js"></script>
+   
+<head>
+
+<style>
+
+.test{
+    width: 80px;
+    height: 100px;
+    background: red;
+    position :relative;
+    -webkit-animation: mymove 5s infinite; /* Safari 4.0 - 8.0 */
+    animation: mymove 12.7s infinite;
+    transition-property: width;
+}
+
+
+/* Standard syntax */
+@keyframes mymove {
+    0%   {left: 0px;}
+    25%  {left: 700px;}
+    75%  {left: 300px}
+    100% {left: 960px;}
+}
+
+    .test1{
+    width: 100px;
+    height: 100px;
+    background: red;
+    transition-property: width;
+    transition-duration: 10s;
+    transition-delay: 0s;
+    }
+    .test:hover {
+    width: 500px;
+    }
+    .qnum{
+        background-color: blue;
+        color: whitesmoke;
+        font-size: 20px;
+    }
+    .option1{
+        size: 20px;
+        background-color: rgb(76, 205, 245);
+        color: rgb(23, 4, 131);
+        font-size: 20px;
+    }
+    .option2{
+        size: 20px;
+        background-color: rgb(95, 118, 230);
+        color: rgba(3, 9, 90, 0.986);
+        font-size: 20px;
+    }
+    .option3{
+        size: 20px;
+        background-color: rgb(60, 233, 94);
+        color: rgb(104, 5, 109);
+        font-size: 20px;
+    }
+    .option4{
+        size: 20px;
+        background-color: rgb(236, 114, 69);
+        color: rgb(82, 3, 14);
+        font-size: 20px;
+    }
+    .ques{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 20px;
+    min-height: 2000px;
+    }
+    body {
+    background-color:whitesmoke;
+    }
+
+    .home{
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 90px;
+    min-height: 200px;
+    }
+
+    .transp {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+    border:none;
+}
+
+</style>
+
+<script>
+    var app=angular.module('home', ['ngCookies','ngFileUpload', 'ngRoute'])
+        .config(['$locationProvider', function($locationProvider) {
+            $locationProvider.html5Mode(false);
+            $locationProvider.hashPrefix('');
+        }]);
+    app.controller('homecontroller',function($scope,$http,$cookies,$window,$route,$timeout,$interval){
+        $scope.flag1=false;
+        $scope.flag2=false;
+        $scope.message="Give Quiz";
+        $scope.count=0;
+        $scope.myTimer;
+        $scope.notify=function(){
+            console.log("notify clicked");
+        }
+
+        $scope.messages=function(){
+            console.log("messages clicked");
+        }
+
+        $scope.contacts=function(){
+            console.log("contacts clicked");
+        }
+
+        $http.get('/quiz/getquestions').then(function(res){
+            console.log("respo");
+            $scope.questions=res.data;
+            //$scope.f2=f2;
+            //$scope.$eval('f2').call([]);
+            var startTime=new Date();
+            //console.log(startTime.getSeconds());
+            var startsecs=startTime.getSeconds()%10;
+            var endsecs=startsecs+10;
+            console.log(startsecs);
+            console.log(endsecs);
+            $scope.myTimer = $timeout(function(){
+                Materialize.toast('Times Up!', 3000);
+                $scope.next();
+            }, 12000);
+        });
+
+        $scope.next=function(){
+            $http.get('/quiz/getquestions').then(function(res){
+                console.log("respo");
+                console.log(res.data);
+                if(res.data.attempted !=undefined){  
+                    alert("Quiz over, you attempted: "+res.data.attempted + 
+                    " and correct are: " + res.data.correct);
+                    $window.location.href="http://localhost:8000/home";
+                }
+                $scope.questions=res.data;
+                $timeout.cancel($scope.myTimer);
+                $scope.myTimer = $timeout(function(){
+                Materialize.toast('Times Up!', 3000);
+                //alert("times up!!");
+                $scope.next();
+                }, 12000);
+                });
+        }
+
+        $scope.checkanswer=function(optionchoosed){
+            $http.get('/quiz/checkanswer?optionchoosed='+ optionchoosed).then(function(res){
+                if(res.data=="correct"){
+                    $scope.flag1=true;
+                    $scope.flag2=false;
+                }else{
+                    $scope.flag2=true;
+                    $scope.flag1=false;
+                }
+                $window.location.href="http://localhost:8000/home/givequiz";
+                //$scope.next();
+            });
+        }
+    });
+</script>
+
+
+<title>
+    Give Quiz
+</title>
+
+</head>
+
+    <body ng-controller="homecontroller">
+        <nav>
+            <div class="nav-wrapper blue">
+              <a href="/home" class="brand-logo center">QUIZINGA</a>
+              <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="/home/givequiz">Give Quiz</a> 
+            </li>
+                &nbsp; &nbsp;&nbsp; &nbsp;
+                <li>
+                    <a href="/profile">Profile</a> 
+                </li>
+
+                <li>
+                    <a href="/quiz/">Create Quiz</a> 
+                </li>
+
+                </ul>
+
+                <ul class="left hide-on-med-and-down">
+                    <li>
+                        <a href="/topics/yourtopics">Your Topics</a> 
+                    </li>
+
+                    <li>
+                        <a href="/topics/">Create Topic</a> 
+                    </li>
+
+                    <li>
+                        <a href="/topics/alltopics">All Topics</a> 
+                    </li>
+
+                    </ul>
+            </div>
+          </nav>
+          <div class="test"></div>
+          <div id="id1"></div>
+          <a style="position: absolute;right:200;top:90" class="btn btn-floating btn-large red pulse"><i class="material-icons">timer</i></a>
+          <div class="chip" style="position: absolute;right:400;top:90"><i class="material-icons">done</i>{{questions.correct}}</div>  
+          <div id="divID" class="home">
+            <div class="row">
+                <div class="chip qnum">Question Number: {{questions.count}}</div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a ng-show="flag2" class="btn btn-floating btn-large red pulse"><i class="material-icons">exposure_neg_1</i></a> <a ng-show="flag1" class="btn btn-floating btn-large pulse"><i class="material-icons">exposure_plus_1</i></a> 
+                <br><br>
+                    <div class="card-panel blue lighten-1">
+                        <h5>{{questions.question}}</h5>
+                        </div>
+                        <br><br>
+                    <div class="col-sm-8">
+                        <button ng-click="checkanswer(questions.options[0])" class="transp"><div class="chip option1">{{questions.options[0]}}</div></button>
+                        <br><br>
+                        <button ng-click="checkanswer(questions.options[1])" class="transp"><div class="chip option2">{{questions.options[1]}}</div></button>
+                        <br><br>
+                    </div>
+                    <div class="col-sm-8">
+                        <button ng-click="checkanswer(questions.options[2])" class="transp"><div class="chip option3">{{questions.options[2]}}</div></button>
+                        <br><br>
+                        <button ng-click="checkanswer(questions.options[3])" class="transp"><div class="chip option4">{{questions.options[3]}}</div></button>      
+                    </div>
+                    <br><br>
+            </div>
+            </div>
+
+        <a title="Logout" href="/users/logout" style="position: absolute;right:30;top:90" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">arrow_drop_down_circle</i></a>
+        
+
+
+        <div class="fixed-action-btn toolbar">
+            <a title="Notifications" class="btn-floating btn-large blue">
+              <i class="large material-icons">person</i>
+            </a>
+            <ul>
+              <li class="waves-effect waves-light"><a ng-click="contacts()"><i class="material-icons">contacts</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="messages()" href="#!"><i class="material-icons">message</i></a></li>
+              <li class="waves-effect waves-light"><a ng-click="notify()" href="#!"><i class="material-icons">notifications</i></as></li>
+           </ul>
+          </div>
+          <progress value="0" max="10" id="progressBar"></progress>
+</body>
+
+    </html>
